@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Spam Detection</title>
+    <style>
+        /* Reset defaults */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at top, #000000 0%, #0a0a0a 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 60px 20px;
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #f5c518;
+        }
+
+        /* Header with glowing gradient animation */
+        .heading {
+            width: 100%;
+            padding: 25px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 60px;
+            animation: fadeDown 1.2s ease forwards;
+        }
+
+        .heading h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #b58900, #f5c518, #b58900);
+            background-size: 300%;
+            background-clip: text; /* Standard property */
+            -webkit-background-clip: text; /* Vendor prefix for Safari */
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+            animation: goldFlow 6s linear infinite;
+        }
+
+        @keyframes goldFlow {
+            0% { background-position: 0%; }
+            100% { background-position: 300%; }
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form container */
+        form {
+            background: rgba(20, 20, 20, 0.95);
+            border: 1px solid rgba(245, 197, 24, 0.2);
+            padding: 40px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 650px;
+            box-shadow: 0 0 30px rgba(245, 197, 24, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: floatUp 1.4s ease forwards 0.6s;
+            backdrop-filter: blur(5px);
+        }
+
+        @keyframes floatUp {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #f5c518;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #444;
+            background-color: #0e0e0e;
+            color: #f5f5f5;
+            resize: vertical;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.4);
+        }
+
+        textarea:focus {
+            border-color: #f5c518;
+            box-shadow: 0 0 15px rgba(245, 197, 24, 0.4);
+            outline: none;
+        }
+
+        input[type="submit"] {
+            background: linear-gradient(90deg, #f5c518, #d4a017, #f5c518);
+            background-size: 200%;
+            color: #000;
+            font-weight: bold;
+            font-size: 1rem;
+            border: none;
+            border-radius: 10px;
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 20px rgba(245, 197, 24, 0.3);
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        input[type="submit"]:hover {
+            background-position: 100%;
+            box-shadow: 0 0 30px rgba(245, 197, 24, 0.6);
+            transform: scale(1.05);
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(245, 197, 24, 0.3); }
+            50% { box-shadow: 0 0 35px rgba(245, 197, 24, 0.6); }
+        }
+
+        /* Prediction output */
+        h2 {
+            margin-top: 50px;
+            color: #f5c518;
+            text-align: center;
+            font-size: 1.6rem;
+            font-weight: 500;
+            text-shadow: 0 0 12px rgba(245, 197, 24, 0.3);
+            animation: fadeInText 1.5s ease forwards 1s;
+            position: relative;
+        }
+
+        h2::before {
+            content: "";
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #f5c518, transparent);
+            animation: glowLine 2s ease-in-out infinite;
+        }
+
+        @keyframes glowLine {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes fadeInText {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Floating particles (gold dust) */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, #f5c518 0%, transparent 70%);
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: floatParticle 8s infinite ease-in-out;
+        }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(0) scale(1); opacity: 0.3; }
+            50% { transform: translateY(-80px) scale(1.2); opacity: 0.7; }
+            100% { transform: translateY(0) scale(1); opacity: 0.3; }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles">
+        <div class="particle" style="top:10%; left:20%; animation-delay:0s;"></div>
+        <div class="particle" style="top:40%; left:70%; animation-delay:1s;"></div>
+        <div class="particle" style="top:80%; left:50%; animation-delay:2s;"></div>
+        <div class="particle" style="top:60%; left:30%; animation-delay:3s;"></div>
+        <div class="particle" style="top:20%; left:80%; animation-delay:4s;"></div>
+    </div>
+
+    <div class="heading">
+        <h1>Email Spam Detection</h1>
+    </div>
+
+    <form action="/" method="POST">
+        <label for="email_text">Enter Email:</label>
+        <textarea name="email_text" id="email_text" rows="5" placeholder="Paste your email content here..."></textarea>
+        <input type="submit" value="Analyze">
+    </form>
+
+    <h2>{{predict}}</h2>
+</body>
+</html>
